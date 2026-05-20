@@ -1,0 +1,21 @@
+Trong folder mới thực hiện lần lượt các lệnh sau
+1. git init
+2. git config user.name "..."
+3. git config user.email "..."
+4. git pull -> pull các code mới hoặc project đã có
+5. git add . -> add các file có sửa đổi vào staging area tạo ra version commit
+6. git commit -m "message" -> commit version chứa các file có sửa đổi lên repository
+7. git push origin main -> push commit đó lên nhánh main
+
+a. Tạo 3 file: file1, file2, file3
+-> Vùng Working Directory
+b. git init
+-> Vùng Working Directory: file1, file2, file3, .gitignore, package.json
+c. git commit -m "init project"
+-> Vùng Working Directory do chưa add file vào staging
+d. git add file1
+-> Vùng staging area: file1
+e. git commit -m "add file1"
+-> Vùng repository: file1
+f. git commit -m "add file"
+-> Vùng repository: giữ mỗi file1 do không có file nào mới được add vào staging
