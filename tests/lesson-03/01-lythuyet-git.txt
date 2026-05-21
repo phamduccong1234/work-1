@@ -1,0 +1,5 @@
+1. git commit --amend: dùng để chỉnh sửa commit gần nhất
+-> dùng khi quên thêm file vào commit cuối, sửa message commit, cập nhật nội dung commit cuối
+2. git commit --amend -m "message": gần giống với lệnh trên nhưng sẽ sửa commit gần nhất ngay lập tức kèm message
+3. git restore --staged <file>: bỏ file khỏi staging area(là vùng đã dùng git add các file vào)
+4. git reset HEAD~1: quay lại commit trước đó và giữ nguyên code đang sửa hiện tại
