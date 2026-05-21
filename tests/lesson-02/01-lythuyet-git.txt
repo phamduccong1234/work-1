@@ -1,4 +1,6 @@
-git init: khởi tạo repo git, kết nối git với dự án, tạo ra các file .gitignore và package.json
+git init: khởi tạo repo git
+// .gitignore tự tạo bằng tay
+// package.json (được tạo bởi lệnh npm init của Node.js)
 git add <file_name>: add file được chỉ định có sửa đổi vào staging area
 git add .: add tất cả các file có sửa đổi vào staging area
 git commit -m "message": commit các file thay đổi vào repository kèm message thay đổi những gì
