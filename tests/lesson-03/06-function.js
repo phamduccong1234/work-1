@@ -9,10 +9,9 @@ function findMin(a, b, c) {
   let min = a;
   if (b < min) {
     min = b;
-  } else if (c < min) {
+  }
+  if (c < min) {
     min = c;
-  } else {
-    min = a;
   }
   return min;
 }

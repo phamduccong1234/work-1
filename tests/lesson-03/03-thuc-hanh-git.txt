@@ -18,12 +18,12 @@ c. Thêm file .gitignore, thêm vào 2 dòng
 
 d. Chạy lệnh git add .
 - Local: 
-- Working directory: 
-- Staging: file1.txt, file2.txt, oops/file3.txt, .gitignore (file1.txt /n oops/)
+- Working directory: file1.txt, oops/file3.txt, .gitignore (file1.txt /n oops/)
+- Staging: file2.txt
 - Repository: 
 
 e. Chạy lệnh git commit -m "message"
 - Local: 
-- Working directory: 
+- Working directory: file1.txt, oops/file3.txt, .gitignore (file1.txt /n oops/)
 - Staging: 
-- Repository: file1.txt, file2.txt, oops/file3.txt, .gitignore (file1.txt /n oops/)
+- Repository: file2.txt

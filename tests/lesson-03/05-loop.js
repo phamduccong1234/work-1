@@ -2,13 +2,13 @@
 let sum = 0;
 for (let i = 1; i <= 100; i++) {
   sum += i;
-  console.log(sum);
 }
+console.log(sum);
 
 // 2.
 for (let i = 2; i <= 9; i++) {
-  for (let j = 1; j <= 9; j++) {
-    console.log(`Bảng cửu chương ${i}`);
+  console.log(`Bảng cửu chương ${i}`);
+  for (let j = 1; j <= 10; j++) {
     console.log(`Phép tính: ${i} x ${j} = ${i * j}`);
   }
 }
