@@ -32,5 +32,7 @@ test('Basic actions', async ({ page}) => {
 
     await test.step("Upload file", async () => {
         await page.locator("//input[@id='profile']").setInputFiles("tests/data-test/data-test.txt");
-    })
+    });
+
+    
 });
