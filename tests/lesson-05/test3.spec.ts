@@ -19,5 +19,10 @@ test("Bài học 3: Todo page", async ({ page }) => {
     console.log(count);
   });
 
-  await test.step("Delete todo tasks with odds number", async () => {});
+  await test.step("Delete todo tasks with odds number", async () => {
+    page.on("dialog", (dialog) => dialog.accept());
+    for (let i = 1; i <= 100; i += 2) {
+      await page.locator(`//button[@id='todo-${i}-delete']`).click();
+    }
+  });
 });

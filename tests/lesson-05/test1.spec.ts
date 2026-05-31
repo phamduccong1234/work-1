@@ -39,14 +39,7 @@ test("Bài học 1: Register Page", async ({ page }) => {
       );
     }
     // favorite color
-    await page.locator("//input[@id='favcolor']").click();
-    const color = await page.locator("//input[@id='favcolor']").boundingBox();
-    if (color) {
-      await page.mouse.click(
-        color.x + color.width * 0.7,
-        color.y + color.height * 0.3,
-      );
-    }
+    await page.locator("//input[@id='favcolor']").fill("#744949");
     await page.locator("//input[@id='newsletter']").click();
     await page.locator("//span[@class='slider round']").click();
     // star rating
