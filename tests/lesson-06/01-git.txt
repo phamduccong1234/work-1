@@ -1,0 +1,4 @@
+a. git clone <url>: Câu lệnh này dùng để clone 1 project repo về máy local
+b. git branch <branch_name>: Câu lệnh này để tạo ra một branch mới với branch_name đó trên local
+c. git checkout <branch_name>: Câu lệnh này dùng để switch từ nhánh hiện tại sang nhánh có branch_name
+d. git checkout -b <branch_name>: Câu lệnh này dùng để tự động switch qua nhánh mới có branch_name sau khi tạo nhánh mới với branch_name
