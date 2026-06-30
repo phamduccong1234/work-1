@@ -61,7 +61,7 @@ test.describe("ACCOUNT - Account", async () => {
   });
 
   test.afterEach(async ({ page }) => {
-    await page.getByRole("menuitem", { name: "Howdy," }).hover();
+    await page.locator('#wp-admin-bar-my-account').hover();
     await page.getByRole("menuitem", { name: "Log Out" }).click();
 
     await page
@@ -73,7 +73,7 @@ test.describe("ACCOUNT - Account", async () => {
 
     await page.getByRole("button", { name: "Log In" }).click();
 
-    await page.getByText("Users", { exact: true }).click();
+    await page.locator('.wp-menu-name').getByText("Users", { exact: true }).click();
     await page
       .getByRole("searchbox", { name: "Search Users:" })
       .fill(newUser.lastname);
@@ -83,7 +83,7 @@ test.describe("ACCOUNT - Account", async () => {
       .locator(`#${newUser.username}`)
       .getByRole("link", { name: "Delete" })
       .click();
-    let deleteContent = await page.locator("//input[@id='delete_option0']");
+    let deleteContent = await page.getByRole('radio', { name: 'Delete all content.', checked: true });
     if ((await deleteContent.isVisible()) === true) {
       await deleteContent.click();
     }
@@ -101,24 +101,23 @@ test.describe("ACCOUNT - Account", async () => {
 
   test("ACC_001 - Create account with editor permission", async ({ page }) => {
     await test.step("Go to User Management page", async () => {
-      await page.getByText("Users", { exact: true }).click();
+      await page.locator('.wp-menu-name').getByText("Users", { exact: true }).click();
       await expect(
         page.getByRole("heading", { name: "Users", level: 1 }),
       ).toBeVisible();
       let enableBtnAddUser = page
         .locator("#wpbody-content")
-        .getByRole("link", { name: "Add User" })
-        .isEnabled();
-      await expect(enableBtnAddUser).toEqual(true);
+        .getByRole("link", { name: "Add User" });
+      await expect(enableBtnAddUser).toBeEnabled();
     });
 
     await test.step("Add new user", async () => {
-      await page.getByRole("link", { name: "Add User" }).click();
+      await page.locator('#wpbody-content').getByRole("link", { name: "Add User" }).click();
       await page
         .getByRole("textbox", { name: "Username (required)" })
         .fill(newUser.username);
       await page
-        .getByRole("textbox", { name: "Password				(required)" })
+        .getByRole("textbox", { name: /Password/i })
         .fill(newUser.password);
       await page
         .getByRole("textbox", { name: "Email (required)" })
@@ -140,7 +139,7 @@ test.describe("ACCOUNT - Account", async () => {
         .check();
       await page.getByRole("button", { name: "Add User" }).click();
 
-      let messageAddNewUser = page.getByText("New user created.", {
+      let messageAddNewUser = page.getByText(/New user created./i, {
         exact: true,
       });
       await expect(messageAddNewUser).toBeVisible();
@@ -152,21 +151,27 @@ test.describe("ACCOUNT - Account", async () => {
 
       await page
         .getByRole("textbox", { name: "Username or Email Address" })
-        .fill(rightAccount.username);
+        .fill(newUser.username);
       await page
         .getByRole("textbox", { name: "Password" })
-        .fill(rightAccount.password);
+        .fill(newUser.password);
 
       await page.getByRole("button", { name: "Log In" }).click();
       for (const visiblemenu of visibleMenusEditor) {
+        // await expect(page.locator(`#menu-${visiblemenu}`).getByRole('link', { name: `${visiblemenu}`, exact: true})).toBeVisible();
+        // await expect(page.locator(".wp-menu-name").getByRole('link', { name: `${visiblemenu}`, exact: true})).toBeVisible();
+        // await expect(page.locator("#adminmenu").getByRole('link', { name: `${visiblemenu}`, exact: true})).toBeVisible();
         await expect(
-          page.getByText(`${visiblemenu}`, { exact: true }),
-        ).toBeVisible();
+  page.locator("#adminmenu a.menu-top").filter({ hasText: visiblemenu })
+).toBeVisible();
       }
       for (const hiddenmenu of hiddenMenusEditor) {
+        // await expect(page.locator(`#menu-${hiddenmenu}`).getByRole('link', { name: `${hiddenmenu}`, exact: true})).toBeHidden();
+        // await expect(page.locator(".wp-menu-name").getByRole('link', { name: `${hiddenmenu}`, exact: true})).toBeHidden();
+        // await expect(page.locator("#adminmenu").getByRole('link', { name: `${hiddenmenu}`, exact: true})).toBeHidden();
         await expect(
-          page.getByText(`${hiddenmenu}`, { exact: true }),
-        ).toBeHidden();
+  page.locator("#adminmenu a.menu-top").filter({ hasText: hiddenmenu })
+).toBeHidden();
       }
     });
   });
