@@ -16,7 +16,7 @@ const newUser = {
   firstname: "playwright",
   lastname: "congpham",
   roleEditor: "editor",
-  roldSubscriber: "subscriber",
+  roleSubscriber: "subscriber",
 };
 
 const visibleMenusEditor = [
@@ -46,6 +46,11 @@ const hiddenMenusSubscriber = [
 
 test.describe("ACCOUNT - Account", async () => {
   test.beforeEach(async ({ page }) => {
+    const uniqueId = Date.now() + Math.floor(Math.random() * 1000);
+    newUser.username = `playwright-congpham-${uniqueId}`;
+    newUser.email = `phamduccong1234-${uniqueId}@gmail.com`;
+    newUser.lastname = `congpham-${uniqueId}`;
+
     await test.step("Access into login page and login", async () => {
       await page.goto(url.loginUrl);
 
@@ -96,7 +101,6 @@ test.describe("ACCOUNT - Account", async () => {
     await page.getByRole("button", { name: "Search Users" }).click();
     const noUsersFoundText = page.getByText("No users found.", { exact: true });
     await expect(noUsersFoundText).toHaveText(/No users found./);
-    await page.close();
   });
 
   test("ACC_001 - Create account with editor permission", async ({ page }) => {
@@ -201,7 +205,7 @@ test.describe("ACCOUNT - Account", async () => {
       await page.locator("//input[@id='last_name']").fill(newUser.lastname);
       await page
         .locator("//select[@id='role']")
-        .selectOption(newUser.roldSubscriber);
+        .selectOption(newUser.roleSubscriber);
       await page.locator("//input[@name='pw_weak']").check();
       await page.locator("//input[@id='createusersub']").click();
 

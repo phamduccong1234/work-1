@@ -19,7 +19,7 @@ const newUser = {
   firstname: "playwright",
   lastname: "congpham",
   roleEditor: "editor",
-  roldSubscriber: "subscriber",
+  roleSubscriber: "subscriber",
 };
 
 const visibleMenusEditor = [
@@ -49,6 +49,11 @@ const hiddenMenusSubscriber = [
 
 test.describe("ACCOUNT - Account", async () => {
   test.beforeEach(async ({ page }) => {
+    const uniqueId = Date.now() + Math.floor(Math.random() * 1000);
+    newUser.username = `playwright-congpham-${uniqueId}`;
+    newUser.email = `phamduccong1234-${uniqueId}@gmail.com`;
+    newUser.lastname = `congpham-${uniqueId}`;
+
     await test.step("Access into login page and login", async () => {
       await page.goto(xpathLocator.loginUrl);
 
@@ -85,27 +90,24 @@ test.describe("ACCOUNT - Account", async () => {
         `//a[text()='${newUser.username}']/parent::strong/following-sibling::div/descendant::a[text()='Delete']`,
       )
       .click();
-    let deleteContent = await page.locator("#delete_option0");
-    if ((await deleteContent.isVisible()) === true) {
-      await deleteContent.click();
-    }
+    await page.locator("#delete_option0").click();
     await page.locator("#submit").click();
     await expect(page.locator("#message > p")).toHaveText("User deleted.");
     await page.locator("#user-search-input").fill(newUser.lastname);
     await page.locator("#search-submit").click();
     let messageDeleteUser = await page.locator("#the-list > tr > td");
     await expect(messageDeleteUser).toHaveText(/No users found./);
-    await page.close();
   });
 
   test("ACC_001 - Create account with editor permission", async ({ page }) => {
     await test.step("Go to User Management page", async () => {
       await page.locator("#menu-users").click();
       await expect(page.locator("#wpbody-content > div.wrap > h1")).toBeVisible();
-      let enableBtnAddUser = await page
-        .locator("#wpbody-content > div.wrap > a")
-        .isEnabled();
-      await expect(enableBtnAddUser).toEqual(true);
+      await expect(
+        page.locator(
+          "#wpbody-content > div.wrap > a"
+        )
+      ).toBeEnabled();
     });
 
     await test.step("Add new user", async () => {
@@ -157,10 +159,11 @@ test.describe("ACCOUNT - Account", async () => {
     await test.step("Go to User Management page", async () => {
       await page.locator("#menu-users").click();
       await expect(page.locator("#wpbody-content > div.wrap > h1")).toBeVisible();
-      let enableBtnAddUser = await page
-        .locator("#wpbody-content > div.wrap > a")
-        .isEnabled();
-      await expect(enableBtnAddUser).toEqual(true);
+      await expect(
+        page.locator(
+          "#wpbody-content > div.wrap > a"
+        )
+      ).toBeEnabled();
     });
 
     await test.step("Add new user", async () => {
@@ -170,7 +173,7 @@ test.describe("ACCOUNT - Account", async () => {
       await page.locator("#email").fill(newUser.email);
       await page.locator("#first_name").fill(newUser.firstname);
       await page.locator("#last_name").fill(newUser.lastname);
-      await page.locator("#role").selectOption(newUser.roldSubscriber);
+      await page.locator("#role").selectOption(newUser.roleSubscriber);
       let passwordWeak = await page.locator(".pw-checkbox");
       if ((await passwordWeak.isVisible()) === true) {
         await passwordWeak.check();
