@@ -68,7 +68,7 @@ test.describe("ACCOUNT - Account", async () => {
     });
   });
 
-  test.afterEach(async ({ page }) => {
+  test.afterEach(async ({ page, context }) => {
     await page.locator("#wp-admin-bar-my-account").hover();
     await page.locator("#wp-admin-bar-logout > a").click();
 
@@ -90,13 +90,16 @@ test.describe("ACCOUNT - Account", async () => {
         `//a[text()='${newUser.username}']/parent::strong/following-sibling::div/descendant::a[text()='Delete']`,
       )
       .click();
-    await page.locator("#delete_option0").click();
+    if (await page.locator("#delete_option0").isVisible()) {
+      await page.locator("#delete_option0").click();
+    }
     await page.locator("#submit").click();
     await expect(page.locator("#message > p")).toHaveText("User deleted.");
     await page.locator("#user-search-input").fill(newUser.lastname);
     await page.locator("#search-submit").click();
     let messageDeleteUser = await page.locator("#the-list > tr > td");
     await expect(messageDeleteUser).toHaveText(/No users found./);
+    await context.close();
   });
 
   test("ACC_001 - Create account with editor permission", async ({ page }) => {

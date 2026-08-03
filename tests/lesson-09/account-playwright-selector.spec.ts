@@ -65,8 +65,8 @@ test.describe("ACCOUNT - Account", async () => {
     });
   });
 
-  test.afterEach(async ({ page }) => {
-    await page.locator('#wp-admin-bar-my-account').hover();
+  test.afterEach(async ({ page, context }) => {
+    await page.locator("#wp-admin-bar-my-account").hover();
     await page.getByRole("menuitem", { name: "Log Out" }).click();
 
     await page
@@ -78,20 +78,23 @@ test.describe("ACCOUNT - Account", async () => {
 
     await page.getByRole("button", { name: "Log In" }).click();
 
-    await page.locator('.wp-menu-name').getByText("Users", { exact: true }).click();
+    await page
+      .locator(".wp-menu-name")
+      .getByText("Users", { exact: true })
+      .click();
     await page
       .getByRole("searchbox", { name: "Search Users:" })
       .fill(newUser.lastname);
     await page.getByRole("button", { name: "Search Users" }).click();
     await page.getByRole("link", { name: `${newUser.username}` }).hover();
     await page
-      .locator(`#${newUser.username}`)
       .getByRole("link", { name: "Delete" })
       .click();
-    let deleteContent = await page.getByRole('radio', { name: 'Delete all content.', checked: true });
-    if ((await deleteContent.isVisible()) === true) {
-      await deleteContent.click();
+
+    if (await page.getByRole('radio', { name: 'Delete all content.' }).isVisible()) {
+      await page.getByRole('radio', { name: 'Delete all content.' }).click();
     }
+    
     await page.getByRole("button", { name: "Confirm Deletion" }).click();
     const userDeletedText = page.getByText("User deleted.", { exact: true });
     await expect(userDeletedText).toBeVisible();
@@ -101,11 +104,15 @@ test.describe("ACCOUNT - Account", async () => {
     await page.getByRole("button", { name: "Search Users" }).click();
     const noUsersFoundText = page.getByText("No users found.", { exact: true });
     await expect(noUsersFoundText).toHaveText(/No users found./);
+    await context.close();
   });
 
   test("ACC_001 - Create account with editor permission", async ({ page }) => {
     await test.step("Go to User Management page", async () => {
-      await page.locator('.wp-menu-name').getByText("Users", { exact: true }).click();
+      await page
+        .locator(".wp-menu-name")
+        .getByText("Users", { exact: true })
+        .click();
       await expect(
         page.getByRole("heading", { name: "Users", level: 1 }),
       ).toBeVisible();
@@ -116,12 +123,15 @@ test.describe("ACCOUNT - Account", async () => {
     });
 
     await test.step("Add new user", async () => {
-      await page.locator('#wpbody-content').getByRole("link", { name: "Add User" }).click();
+      await page
+        .locator("#wpbody-content")
+        .getByRole("link", { name: "Add User" })
+        .click();
       await page
         .getByRole("textbox", { name: "Username (required)" })
         .fill(newUser.username);
       await page
-        .getByRole("textbox", { name: /Password/i })
+        .getByRole('textbox', { name: 'Password' })
         .fill(newUser.password);
       await page
         .getByRole("textbox", { name: "Email (required)" })
@@ -162,69 +172,82 @@ test.describe("ACCOUNT - Account", async () => {
 
       await page.getByRole("button", { name: "Log In" }).click();
       for (const visiblemenu of visibleMenusEditor) {
-        // await expect(page.locator(`#menu-${visiblemenu}`).getByRole('link', { name: `${visiblemenu}`, exact: true})).toBeVisible();
-        // await expect(page.locator(".wp-menu-name").getByRole('link', { name: `${visiblemenu}`, exact: true})).toBeVisible();
-        // await expect(page.locator("#adminmenu").getByRole('link', { name: `${visiblemenu}`, exact: true})).toBeVisible();
         await expect(
-  page.locator("#adminmenu a.menu-top").filter({ hasText: visiblemenu })
-).toBeVisible();
+          page.locator(`//div[normalize-space(text())='${visiblemenu}']`),
+        ).toBeVisible();
       }
       for (const hiddenmenu of hiddenMenusEditor) {
-        // await expect(page.locator(`#menu-${hiddenmenu}`).getByRole('link', { name: `${hiddenmenu}`, exact: true})).toBeHidden();
-        // await expect(page.locator(".wp-menu-name").getByRole('link', { name: `${hiddenmenu}`, exact: true})).toBeHidden();
-        // await expect(page.locator("#adminmenu").getByRole('link', { name: `${hiddenmenu}`, exact: true})).toBeHidden();
         await expect(
-  page.locator("#adminmenu a.menu-top").filter({ hasText: hiddenmenu })
-).toBeHidden();
+          page.locator(`//div[normalize-space(text())='${hiddenmenu}']`),
+        ).toBeHidden();
       }
     });
   });
 
-  test("ACC_002 - Create account with subscriber permission", async ({
-    page,
-  }) => {
+  test("ACC_002 - Create account with subscriber permission", async ({ page }) => {
     await test.step("Go to User Management page", async () => {
-      await page.locator("//li[@id='menu-users']").click();
+      await page
+        .locator(".wp-menu-name")
+        .getByText("Users", { exact: true })
+        .click();
       await expect(
-        page.locator("//div[@id='wpbody-content']/descendant::h1"),
+        page.getByRole("heading", { name: "Users", level: 1 }),
       ).toBeVisible();
-      let enableBtnAddUser = await page
-        .locator("//div[@id='wpbody-content']/descendant::a[text()='Add User']")
-        .isEnabled();
-      await expect(enableBtnAddUser).toEqual(true);
+      let enableBtnAddUser = page
+        .locator("#wpbody-content")
+        .getByRole("link", { name: "Add User" });
+      await expect(enableBtnAddUser).toBeEnabled();
     });
 
     await test.step("Add new user", async () => {
       await page
-        .locator("//div[@id='wpbody-content']/descendant::a[text()='Add User']")
+        .locator("#wpbody-content")
+        .getByRole("link", { name: "Add User" })
         .click();
-      await page.locator("//input[@id='user_login']").fill(newUser.username);
-      await page.locator("//input[@id='pass1']").fill(newUser.password);
-      await page.locator("//input[@id='email']").fill(newUser.email);
-      await page.locator("//input[@id='first_name']").fill(newUser.firstname);
-      await page.locator("//input[@id='last_name']").fill(newUser.lastname);
       await page
-        .locator("//select[@id='role']")
+        .getByRole("textbox", { name: "Username (required)" })
+        .fill(newUser.username);
+      await page
+        .getByRole('textbox', { name: 'Password' })
+        .fill(newUser.password);
+      await page
+        .getByRole("textbox", { name: "Email (required)" })
+        .fill(newUser.email);
+      await page
+        .getByRole("textbox", { name: "First Name" })
+        .fill(newUser.firstname);
+      await page
+        .getByRole("textbox", { name: "Last Name" })
+        .fill(newUser.lastname);
+      await page
+        .getByRole("combobox", { name: "Role" })
         .selectOption(newUser.roleSubscriber);
-      await page.locator("//input[@name='pw_weak']").check();
-      await page.locator("//input[@id='createusersub']").click();
+      await page
+        .getByRole("checkbox", {
+          name: "Confirm use of weak password",
+          checked: false,
+        })
+        .check();
+      await page.getByRole("button", { name: "Add User" }).click();
 
-      let messageAddNewUser = await page.locator("//div[@id='message']");
-      await expect(messageAddNewUser).toHaveText(/New user created./);
+      let messageAddNewUser = page.getByText(/New user created./i, {
+        exact: true,
+      });
+      await expect(messageAddNewUser).toBeVisible();
     });
 
     await test.step("Logout and login with new user", async () => {
-      await page.locator("//li[@id='wp-admin-bar-my-account']").hover();
-      await page.locator("//a[text()='Log Out']").click();
+      await page.getByRole("menuitem", { name: "Howdy," }).hover();
+      await page.getByRole("menuitem", { name: "Log Out" }).click();
 
       await page
-        .locator(xpathLocator.usernameInputField)
+        .getByRole("textbox", { name: "Username or Email Address" })
         .fill(newUser.username);
       await page
-        .locator(xpathLocator.passwordInputField)
+        .getByRole("textbox", { name: "Password" })
         .fill(newUser.password);
 
-      await page.locator(xpathLocator.btnLogin).click();
+      await page.getByRole("button", { name: "Log In" }).click();
       for (const visiblemenu of visibleMenusSubscriber) {
         await expect(
           page.locator(`//div[normalize-space(text())='${visiblemenu}']`),
@@ -237,4 +260,5 @@ test.describe("ACCOUNT - Account", async () => {
       }
     });
   });
+
 });

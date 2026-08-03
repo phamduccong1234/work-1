@@ -22,7 +22,8 @@ test.describe('AUTH - Authentication', async () => {
     });
   });
 
-  test.afterEach(async ({ page }) => {
+  test.afterEach(async ({ context }) => {
+    await context.close();
   });
 
   test('AUTH_001 - Login fail', async ({ page }) => {
