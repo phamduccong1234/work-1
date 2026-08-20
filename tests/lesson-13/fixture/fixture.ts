@@ -1,24 +1,35 @@
-import { test as base } from "@playwright/test";
-import { EcommercePage, MaterialPage } from "../pom/pom";
+import { test as base, expect } from "@playwright/test";
+import {
+  MaterialPage,
+  PersonalNotesPage,
+  ProductPage,
+  RegisterPage,
+  TodoPage,
+} from "../pom/pom";
 
 type Pages = {
-    materialPage: MaterialPage, 
-    ecommercePage: EcommercePage
-}
+  materialPage: MaterialPage;
+  registerPage: RegisterPage
+  productPage: ProductPage;
+  todoPage: TodoPage;
+  personalNotesPage: PersonalNotesPage;
+};
 
-const test = base.extend<{pages: Pages}>({
-    pages: async ({context}, use) => {
-        const materialPage = new MaterialPage(await context.newPage());
-        const ecommercePage = new EcommercePage(await context.newPage());
-        
-        await materialPage.navigateTo();
-        await ecommercePage.navigateTo();
+const test = base.extend<{ pages: Pages }>({
+  pages: async ({ page }, use) => {
+    const pages = {
+      materialPage: new MaterialPage(page),
+      registerPage: new RegisterPage(page),
+      productPage: new ProductPage(page),
+      todoPage: new TodoPage(page),
+      personalNotesPage: new PersonalNotesPage(page),
+    };
 
+    await pages.materialPage.openMaterialPage();
+    await pages.materialPage.checkHeaderVisible();
 
-        await use({
-            materialPage, ecommercePage
-        });
-    },
+    await use(pages);
+  },
 });
 
-export {test};
+export { test };

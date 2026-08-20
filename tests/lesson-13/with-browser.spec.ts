@@ -1,7 +1,7 @@
 import { expect } from "@playwright/test";
-import { test } from "./fixture/context-fixture";
+import { test } from "./fixture/browser-fixture";
 
-test("Open 2 tabs", async ({ pages }) => {
+test("Open 2 browser", async ({ pages }) => {
   await expect(
     pages.materialPage.page.getByRole("heading", {
       name: "Tài liệu học automation test",
