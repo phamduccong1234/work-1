@@ -1,4 +1,3 @@
-import { expect } from "@playwright/test";
 import { test } from "./fixture/fixture";
 
 test("Product page", async ({ pages }) => {
