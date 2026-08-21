@@ -29,6 +29,8 @@ const test = base.extend<{ pages: Pages }>({
     await pages.materialPage.checkHeaderVisible();
 
     await use(pages);
+
+    console.log("End of test");
   },
 });
 
